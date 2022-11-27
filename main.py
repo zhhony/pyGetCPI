@@ -5,6 +5,10 @@ import time
 import json
 import re
 import random
+import pandas
+import os
+
+PATH = os.environ['USERPROFILE'] + '\\DESKTOP\\123.xlsx'
 
 # 将返回的json解析为dict对象
 
@@ -36,7 +40,7 @@ headers = {"Accept": "*/*",
            "Sec-Fetch-Site": "same-site",
            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36"}
 
-payload = {"callback": "datatable6013649",  # 源码:rnd = 'datatable' + Math.floor(Math.random() * 10000000 + 1);
+payload = {"callback": "",  # JS源码:rnd = 'datatable' + Math.floor(Math.random() * 10000000 + 1);
            "columns": "REPORT_DATE,TIME,NATIONAL_SAME,NATIONAL_BASE,NATIONAL_SEQUENTIAL,NATIONAL_ACCUMULATE,CITY_SAME,CITY_BASE,CITY_SEQUENTIAL,CITY_ACCUMULATE,RURAL_SAME,RURAL_BASE,RURAL_SEQUENTIAL,RURAL_ACCUMULATE",
            "pageNumber": 0,
            "pageSize": 20,
@@ -65,3 +69,10 @@ for i in range(1, 10):
         gzip.decompress(response.read()).decode('utf-8'))
     for j in responseDataList:
         result.append(j)
+
+pdList = []
+index = 1
+for i in result:
+    pdList.append(pandas.DataFrame(i, index=[index]))
+    index += 1
+pandas.concat(pdList).to_excel(PATH)
