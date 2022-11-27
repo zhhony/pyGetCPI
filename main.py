@@ -1,6 +1,7 @@
 from urllib import request
 from urllib import parse
 import gzip
+import time
 import json
 
 headers = {"Accept": "*/*",
@@ -21,25 +22,28 @@ headers = {"Accept": "*/*",
            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36"}
 
 payload = {"callback": "datatable6013649",
-        "columns": "REPORT_DATE,TIME,NATIONAL_SAME,NATIONAL_BASE,NATIONAL_SEQUENTIAL,NATIONAL_ACCUMULATE,CITY_SAME,CITY_BASE,CITY_SEQUENTIAL,CITY_ACCUMULATE,RURAL_SAME,RURAL_BASE,RURAL_SEQUENTIAL,RURAL_ACCUMULATE",
-        "pageNumber": 3,
-        "pageSize": 20,
-        "sortColumns": "REPORT_DATE",
-        "sortTypes": -1,
-        "source": "WEB",
-        "client": "WEB",
-        "reportName": "RPT_ECONOMY_CPI",
-        "p": 3,
-        "pageNo": 3,
-        "pageNum": 3,
-        "_": 1669524330497}
+           "columns": "REPORT_DATE,TIME,NATIONAL_SAME,NATIONAL_BASE,NATIONAL_SEQUENTIAL,NATIONAL_ACCUMULATE,CITY_SAME,CITY_BASE,CITY_SEQUENTIAL,CITY_ACCUMULATE,RURAL_SAME,RURAL_BASE,RURAL_SEQUENTIAL,RURAL_ACCUMULATE",
+           "pageNumber": 0,
+           "pageSize": 20,
+           "sortColumns": "REPORT_DATE",
+           "sortTypes": -1,
+           "source": "WEB",
+           "client": "WEB",
+           "reportName": "RPT_ECONOMY_CPI",
+           "p": 0,
+           "pageNo": 0,
+           "pageNum": 0,
+           "_": 1669524330497}
 
 url = r'https://datacenter-web.eastmoney.com/api/data/v1/get?'
 data = parse.urlencode(payload)
 
 
+for i in range(1, 10):
+    payload['pageNumber'], payload['p'], payload['pageNo'], payload['pageNum'], payload['_'] = i, i, i, i, int(
+        time.time())
+    userRequest = request.Request(
+        url=url + data, headers=headers, method='GET')
 
-userRequest = request.Request(url=url + data, headers=headers, method='GET')
-
-response = request.urlopen(userRequest)
-gzip.decompress(response.read()).decode('utf-8')
+    response = request.urlopen(userRequest)
+    gzip.decompress(response.read()).decode('utf-8')
