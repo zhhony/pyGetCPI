@@ -4,6 +4,7 @@ import gzip
 import time
 import json
 import re
+import random
 
 # 将返回的json解析为dict对象
 
@@ -49,12 +50,12 @@ payload = {"callback": "datatable6013649",
            "_": 1669524330497}
 
 url = r'https://datacenter-web.eastmoney.com/api/data/v1/get?'
-data = parse.urlencode(payload)
 
 result = []
 for i in range(1, 10):
-    payload['pageNumber'], payload['p'], payload['pageNo'], payload['pageNum'], payload['_'] = i, i, i, i, int(
-        time.time())
+    payload['pageNumber'], payload['p'], payload['pageNo'], payload['pageNum'], payload['_'],payload['callback'] = i, i, i, i, int(
+        time.time()),'datatable' + str(random.randint(1000000,9999999))
+    data = parse.urlencode(payload)
     userRequest = request.Request(
         url=url + data, headers=headers, method='GET')
 
