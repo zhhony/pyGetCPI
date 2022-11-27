@@ -59,4 +59,6 @@ for i in range(1, 10):
         url=url + data, headers=headers, method='GET')
 
     response = request.urlopen(userRequest)
-    result.append(decodeJson(gzip.decompress(response.read()).decode('utf-8')))
+    responseDataList = decodeJson(gzip.decompress(response.read()).decode('utf-8'))
+    for j in responseDataList:
+        result.append(j)
