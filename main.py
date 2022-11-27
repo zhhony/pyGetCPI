@@ -3,6 +3,19 @@ from urllib import parse
 import gzip
 import time
 import json
+import re
+
+# 将返回的json解析为dict对象
+
+
+def decodeJson(iput: str) -> list:
+    patternStart = re.compile('^datatable\d+\((?=\{)')  # 寻找开头的 datatable123456 字样
+    patternEnd = re.compile('\);$')  # 寻找结尾的 )" 字样
+    iput = re.sub(patternStart,'',iput)
+    iput = re.sub(patternEnd,'',iput)
+    iput2Dict = json.loads(iput)
+    return iput2Dict['result']['data']
+
 
 headers = {"Accept": "*/*",
            "Accept-Encoding": "gzip, deflate, br",
@@ -38,7 +51,7 @@ payload = {"callback": "datatable6013649",
 url = r'https://datacenter-web.eastmoney.com/api/data/v1/get?'
 data = parse.urlencode(payload)
 
-
+result = []
 for i in range(1, 10):
     payload['pageNumber'], payload['p'], payload['pageNo'], payload['pageNum'], payload['_'] = i, i, i, i, int(
         time.time())
@@ -46,4 +59,4 @@ for i in range(1, 10):
         url=url + data, headers=headers, method='GET')
 
     response = request.urlopen(userRequest)
-    gzip.decompress(response.read()).decode('utf-8')
+    result.append(decodeJson(gzip.decompress(response.read()).decode('utf-8')))
